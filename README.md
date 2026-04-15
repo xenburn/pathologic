@@ -1,19 +1,19 @@
 # pathologic
 
-A small bash utility for adding directories to `PATH` from a plain-text file.
+A small bash/shell utility for adding directories to `PATH` from a plain-text file.
 
 ## Setup
 
 Run the install script:
 
 ```bash
-bash install_pathologic.sh
+sh install_pathologic.sh
 ```
 
 Or with verbose output:
 
 ```bash
-bash install_pathologic.sh -v
+sh install_pathologic.sh -v
 ```
 
 This installs the `pathologic` command and creates a shell function in your `~/.zshrc` so PATH changes persist in your current shell.
@@ -54,6 +54,11 @@ pathologic ~/bin
 # Show help
 pathologic --help
 ```
+
+**How it works:** pathologic checks if the argument is a directory or a file:
+- If it's a **directory** → adds that single directory to PATH
+- If it's a **file** → reads the file and adds each listed directory to PATH
+- If no argument provided → defaults to `~/.pathologic`
 
 ## Options
 
