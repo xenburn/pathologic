@@ -3,6 +3,7 @@ set -euo pipefail
 
 TEST_ID="38208"
 TEST_DIR="$HOME/.pathologic.tmp"
+BACKUP_FILE="$HOME/.pathologic.backup.$TEST_ID"
 
 # Find where pathologic is installed
 if [[ -f "$HOME/bin/pathologic" ]]; then
@@ -32,7 +33,11 @@ pathologic() { source "$PATHOLOGIC_BIN" "$@"; }
 cleanup() {
     info "Cleaning up..."
     rm -rf "$TEST_DIR"
-    rm -f "$HOME/.pathologic"
+    # Restore original .pathologic if backup exists, otherwise leave as-is
+    if [[ -f "$BACKUP_FILE" ]]; then
+        mv "$BACKUP_FILE" "$HOME/.pathologic"
+        info "Restored original ~/.pathologic"
+    fi
     info "Done"
 }
 
@@ -40,6 +45,12 @@ trap cleanup EXIT
 
 setup() {
     info "Setting up test environment..."
+    
+    # Backup original .pathologic if it exists
+    if [[ -f "$HOME/.pathologic" && ! -f "$BACKUP_FILE" ]]; then
+        cp "$HOME/.pathologic" "$BACKUP_FILE"
+        info "Backed up original ~/.pathologic"
+    fi
     
     rm -rf "$TEST_DIR"
     mkdir -p "$TEST_DIR/"{alpha,beta,gamma,delta}
